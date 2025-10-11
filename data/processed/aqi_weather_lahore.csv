@@ -1,0 +1,2 @@
+timestamp_utc,aqi_api,pm25,pm10,o3,no2,so2,co,station_name,fetched_at,temp,feels_like,pressure,humidity,wind_speed,wind_deg,weather_desc,hour,day,month,dow,is_weekend,aqi_change_rate
+2025-02-18 18:00:00,34,34,,,,,,"Lahore US Embassy, Pakistan",2025-10-07 10:37:46.124748+00:00,24.65,24.82,1010,63,3.41,31,broken clouds,18,18,2,1,0,0
