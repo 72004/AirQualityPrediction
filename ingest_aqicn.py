@@ -12,7 +12,7 @@ load_dotenv()
 # Get API tokens and city
 AQICN_TOKEN = os.getenv("AQICN_TOKEN")
 OPENWEATHER_TOKEN = os.getenv("OPENWEATHER_TOKEN")
-CITY = os.getenv("CITY", "Lahore")
+CITY = os.getenv("CITY", "karachi")
 
 if not AQICN_TOKEN:
     raise RuntimeError("❌ Missing AQICN_TOKEN in .env file")
