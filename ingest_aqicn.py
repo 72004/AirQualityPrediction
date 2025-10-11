@@ -5,6 +5,7 @@ import pandas as pd
 from datetime import datetime, timezone
 from urllib.parse import quote
 from dotenv import load_dotenv
+import hopsworks
 
 # Load environment variables from .env
 load_dotenv()
@@ -135,10 +136,50 @@ def main():
     os.makedirs("data/processed", exist_ok=True)
     csv_path = f"data/processed/aqi_weather_{CITY.lower().replace(' ', '_')}.csv"
     df_final = compute_aqi_change_rate(csv_path, df)
-
+    
     df_final.to_csv(csv_path, index=False)
     print(f"✅ Data saved to: {csv_path}")
     print(df_final.tail(3))
+    store_to_hopsworks(df_final, CITY)
+
+def store_to_hopsworks(df, city):
+    import hopsworks
+    import pandas as pd
+
+    print("🚀 Connecting to Hopsworks...")
+    project = hopsworks.login()
+    fs = project.get_feature_store()
+
+    # Convert datetime columns
+    datetime_cols = ["timestamp_utc", "fetched_at"]
+    for col in datetime_cols:
+        if col in df.columns:
+            df[col] = df[col].astype(str)
+
+    # Fix null dtype issues
+    for col in df.columns:
+        if df[col].isnull().all():
+            df[col] = df[col].astype(str)
+        elif df[col].dtype == 'object':
+            df[col] = df[col].astype(str)
+
+    # Ensure numeric pollutant columns are floats
+    pollutant_cols = ["pm25", "pm10", "o3", "no2", "so2", "co", "temp", "humidity", "wind_speed"]
+    for col in pollutant_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0.0)
+
+    fg = fs.get_or_create_feature_group(
+        name="air_quality_features",
+        version=1,
+        description="Air quality and weather features for " + city,
+        primary_key=["timestamp_utc", "station_name"],
+        online_enabled=True
+    )
+
+    fg.insert(df, write_options={"wait_for_job": False})
+    print(f"✅ Data for {city} successfully stored in Hopsworks Feature Group!")
+
 
 # ================================
 if __name__ == "__main__":
