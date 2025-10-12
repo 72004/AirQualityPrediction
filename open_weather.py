@@ -2,13 +2,21 @@ import requests
 import time
 import datetime
 import pandas as pd
+from dotenv import load_dotenv
+import os
 
-API_KEY = "6002ac178c1ae72e8625cd919f36f421"  # replace with your key
+# ✅ Load environment variables
+load_dotenv()
+
+API_KEY = os.getenv("OPENWEATHER_API_KEY")
 LAT, LON = 24.8607, 67.0011  # Karachi
+
+if not API_KEY:
+    raise ValueError("❌ API key not found. Please check your .env file.")
 
 all_data = []
 
-print("📡 Fetching hourly weather data for the past 5 days...\n")
+print("📡 Fetching hourly weather data for the past 20 days...\n")
 
 for days_ago in range(1, 21):
     print(f"📅 Day {days_ago} —", end=" ")
@@ -45,7 +53,7 @@ for days_ago in range(1, 21):
     print("✅ Hourly data added.")
 
 df = pd.DataFrame(all_data)
-df.to_csv("karachi_weather_5days_hourly.csv", index=False)
+df.to_csv("karachi_weather_20days_hourly.csv", index=False)
 
 print(f"\n📊 Total records fetched: {len(df)}")
-print("💾 Saved → karachi_weather_5days_hourly.csv")
+print("💾 Saved → karachi_weather_20days_hourly.csv")

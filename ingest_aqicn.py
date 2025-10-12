@@ -1,6 +1,9 @@
 import requests, time, datetime, pandas as pd
+from dotenv import load_dotenv
 
-API_KEY = "6002ac178c1ae72e8625cd919f36f421"
+load_dotenv()
+
+API_KEY = os.getenv("AQICN_TOKEN")
 LAT, LON = 24.8607, 67.0011  # Karachi
 all_data = []
 
