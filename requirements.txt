@@ -3,3 +3,4 @@ requests
 python-dotenv
 hopsworks==4.2
 rich
+pyarrow
