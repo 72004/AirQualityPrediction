@@ -1,5 +1,5 @@
-pandas
+pandas==2.1.4
 requests
 python-dotenv
-hopsworks
+hopsworks==4.2.0
 rich
