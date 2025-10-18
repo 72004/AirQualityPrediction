@@ -49,6 +49,7 @@ def fetch_aqi(lat=24.8607, lon=67.0011):
 
     response = requests.get(url, params=params)
     data = response.json()
+    print(data)
     df = pd.DataFrame(data["hourly"])
     latest = df.iloc[-1]
 
