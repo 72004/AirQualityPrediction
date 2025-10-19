@@ -14,7 +14,7 @@ import joblib
 # 1️⃣ Connect to Hopsworks
 # ----------------------------------------------------------
 print("🔗 Connecting to Hopsworks...")
-project = hopsworks.login()
+project = hopsworks.login(api_key_value=os.environ.get("HOPSWORKS_API_KEY"))
 fs = project.get_feature_store()
 
 # ----------------------------------------------------------
