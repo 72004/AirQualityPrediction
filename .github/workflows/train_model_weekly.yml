@@ -26,9 +26,12 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: |
           python -m pip install --upgrade pip
+          pip uninstall -y sklearn scikit-learn || true
           pip install -r requirements.txt
-          pip install --upgrade scikit-learn
+          echo "✅ Installed packages:"
+          pip list | grep scikit-learn || true
 
+          
       # 4️⃣ Set environment variables
       - name: Set environment variables
         env:
