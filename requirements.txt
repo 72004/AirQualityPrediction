@@ -5,3 +5,9 @@ hopsworks==4.2
 rich
 pyarrow
 confluent-kafka
+sklearn.model_selection
+sklearn.preprocessing
+sklearn.metrics
+sklearn.ensemble
+sklearn.linear_model
+joblib
