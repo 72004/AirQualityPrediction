@@ -20,9 +20,16 @@ load_dotenv()
 # ----------------------------------------------------------
 print("🔗 Connecting to Hopsworks...")
 
+# Try to get key from environment
 api_key = os.getenv("HOPSWORKS_API_KEY")
 
-project = hopsworks.login(api_key_value=api_key)
+if not api_key or api_key.strip() == "":
+    print("⚠️ HOPSWORKS_API_KEY not found in environment. Trying login prompt...")
+    project = hopsworks.login()  # fallback for local testing
+else:
+    print("✅ Using API key from environment")
+    project = hopsworks.login(api_key_value=api_key)
+
 fs = project.get_feature_store()
 
 # ----------------------------------------------------------
