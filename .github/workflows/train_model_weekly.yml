@@ -2,13 +2,18 @@ name: Weekly AQI Model Training
 
 on:
   schedule:
-    # Runs every Sunday at 00:00 UTC (you can adjust as needed)
+    # Runs every Sunday at 00:00 UTC
     - cron: "0 0 * * 0"
   workflow_dispatch:  # Allow manual run from GitHub Actions tab
 
 jobs:
   train-model:
     runs-on: ubuntu-latest
+
+    # ✅ Make secrets available to all steps in this job
+    env:
+      HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
 
     steps:
       # 1️⃣ Checkout your code
@@ -27,19 +32,18 @@ jobs:
         run: |
           echo "🚧 Installing dependencies..."
           python -m pip install --upgrade pip
-          # Force clean install of scikit-learn to avoid sklearn import errors
+          # Clean install of scikit-learn to avoid version conflicts
           pip install --no-cache-dir scikit-learn==1.4.2
           pip install --no-cache-dir -r requirements.txt
           echo "✅ Installed packages:"
           pip show scikit-learn
           pip list | grep scikit-learn || true
 
-      # 4️⃣ Set environment variables
-      - name: Set environment variables
-        env:
-          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-          OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
-        run: echo "✅ Environment variables loaded"
+      # 4️⃣ Verify environment variables (safe check)
+      - name: Check secrets visibility
+        run: |
+          echo "🔍 HOPSWORKS_API_KEY: ${HOPSWORKS_API_KEY:0:5}******"
+          echo "🔍 OPENWEATHER_API_KEY: ${OPENWEATHER_API_KEY:0:5}******"
 
       # 5️⃣ Run the training script
       - name: Train AQI model
