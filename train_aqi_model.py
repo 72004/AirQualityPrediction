@@ -9,12 +9,19 @@ from sklearn.linear_model import Ridge
 # from tensorflow.keras.models import Sequential
 # from tensorflow.keras.layers import Dense
 import joblib
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # ----------------------------------------------------------
 # 1️⃣ Connect to Hopsworks
 # ----------------------------------------------------------
 print("🔗 Connecting to Hopsworks...")
-project = hopsworks.login(api_key_value=os.environ.get("HOPSWORKS_API_KEY"))
+
+api_key = os.getenv("HOPSWORKS_API_KEY")
+
+project = hopsworks.login(api_key_value=api_key)
 fs = project.get_feature_store()
 
 # ----------------------------------------------------------
