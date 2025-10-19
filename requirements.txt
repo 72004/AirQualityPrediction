@@ -5,5 +5,5 @@ hopsworks==4.2
 rich
 pyarrow
 confluent-kafka
-sklearn
+scikit-learn
 joblib
