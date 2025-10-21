@@ -1,4 +1,4 @@
-name: 🌤️ Hourly Weather & Air Quality Ingestion to Hopsworks
+name: 🌤️ Hourly Weather & Air Quality Ingestion to Hopsworks_V3
 
 on:
   workflow_dispatch:       # ✅ Manual trigger
