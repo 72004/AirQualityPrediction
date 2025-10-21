@@ -21,20 +21,20 @@ jobs:
         with:
           python-version: "3.10"
 
-      # 3️⃣ Install dependencies
+      # 3️⃣ Debug repository structure (optional)
+      - name: Debug workspace
+        run: |
+          echo "📂 Listing repo files..."
+          ls -R
+
+      # 4️⃣ Install dependencies
       - name: Install dependencies
+        working-directory: ${{ github.workspace }}
         run: |
           echo "📦 Installing dependencies..."
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install hopsworks pandas requests python-dotenv pyarrow pytz
-
-      # 4️⃣ Set Timezone (🌍 Local to Pakistan Standard Time)
-      - name: Set timezone
-        run: |
-          echo "🕒 Setting timezone to Asia/Karachi..."
-          sudo timedatectl set-timezone Asia/Karachi
-          date
+          pip install hopsworks pandas requests python-dotenv pyarrow
 
       # 5️⃣ Run the ingestion script
       - name: 🚀 Run Weather & Pollutant Ingestion
