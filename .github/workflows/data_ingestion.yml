@@ -32,7 +32,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install --upgrade hopsworks requests pandas python-dotenv
+          pip install --upgrade hopsworks requests pandas python-dotenv 
 
       # 5️⃣ Run ingestion script
       - name: Run hourly ingestion
