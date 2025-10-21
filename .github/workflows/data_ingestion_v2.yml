@@ -33,7 +33,7 @@ jobs:
         run: |
           echo "📦 Installing dependencies..."
           python -m pip install --upgrade pip
-          pip install hopsworks pandas requests python-dotenv
+          pip install hopsworks pandas requests python-dotenv pyarrow
 
       # 5️⃣ Run the ingestion script
       - name: 🚀 Run Weather & Pollutant Ingestion
