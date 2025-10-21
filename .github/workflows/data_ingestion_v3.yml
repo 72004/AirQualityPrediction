@@ -1,0 +1,60 @@
+name: 🌤️ Hourly Weather & Air Quality Ingestion to Hopsworks
+
+on:
+  workflow_dispatch:       # ✅ Manual trigger
+  schedule:
+    - cron: "0 * * * *"    # ⏰ Runs every hour (UTC)
+
+jobs:
+  ingest-data:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # 1️⃣ Checkout repository
+      - name: 📦 Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set timezone to Asia/Karachi (important!)
+      - name: 🌍 Set timezone to Asia/Karachi
+        run: |
+          sudo timedatectl set-timezone Asia/Karachi
+          echo "🕒 Current runner time (Karachi):"
+          date
+
+      # 3️⃣ Set up Python
+      - name: 🐍 Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # 4️⃣ Debug workspace structure (optional)
+      - name: 🔍 List repo files
+        run: |
+          echo "📂 Repository structure:"
+          ls -R
+
+      # 5️⃣ Install dependencies
+      - name: ⚙️ Install dependencies
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "📦 Installing dependencies..."
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt || echo "⚠️ requirements.txt not found, installing manually..."
+          pip install hopsworks pandas requests python-dotenv pyarrow pytz
+
+      # 6️⃣ Run the ingestion script
+      - name: 🚀 Run Weather & Air Quality Ingestion
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          echo "🌍 Starting weather and AQ ingestion..."
+          python open_metro_hopswork_pushed.py
+          echo "✅ Data ingestion completed!"
+
+      # 7️⃣ Job summary
+      - name: ✅ Job Summary
+        run: |
+          echo "🎯 Weather & pollutant data ingestion completed at $(date)"
+          echo "🧠 Timezone: Asia/Karachi"
+          echo "📊 Check your Hopsworks dashboard for materialization logs."
