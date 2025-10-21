@@ -41,7 +41,7 @@ jobs:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
           echo "🌍 Starting weather and AQ ingestion..."
-          python apeending_data_in_csv.py
+          python open_metro_hopswork_pushed.py
           echo "✅ Data ingestion completed!"
 
       # 6️⃣ Summarize
