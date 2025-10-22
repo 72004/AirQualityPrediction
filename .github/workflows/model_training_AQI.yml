@@ -28,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           # Clean install of scikit-learn to avoid version conflicts
           pip install --no-cache-dir scikit-learn==1.4.2
-          pip install hopsworks joblib pandas numpy matplotlib plotly python-dotenv nbconvert jupyter ipykernel
+          pip install hopsworks joblib pandas numpy matplotlib plotly python-dotenv nbconvert jupyter ipykernel pyarrow
           echo "✅ Dependencies installed."
 
       # Step 4: Configure environment
