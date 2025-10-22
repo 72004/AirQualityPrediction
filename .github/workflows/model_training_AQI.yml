@@ -1,66 +1,43 @@
-name: Train AQI Model (Random Forest)
+name: AQI Model Training (Every 12 Hours)
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # Runs every day at 12:00 AM UTC
-  workflow_dispatch:      # Allows manual trigger from GitHub Actions tab
+    # Runs every 12 hours (00:00 and 12:00 UTC)
+    - cron: "0 */12 * * *"
+  workflow_dispatch:  # Allow manual trigger from the Actions tab
 
 jobs:
   train-model:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
-      - name: 📥 Checkout repository
+      # 1️⃣ Checkout your repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Set up Python
-      - name: 🐍 Set up Python
+      # 2️⃣ Set up Python
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
-      # Step 3: Install dependencies
-      - name: 📦 Install dependencies
-        working-directory: ${{ github.workspace }}
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
         run: |
           echo "🚧 Installing dependencies..."
           python -m pip install --upgrade pip
           # Clean install of scikit-learn to avoid version conflicts
           pip install --no-cache-dir scikit-learn==1.4.2
-          pip install hopsworks joblib pandas numpy matplotlib plotly python-dotenv nbconvert jupyter ipykernel pyarrow
-          echo "✅ Dependencies installed."
+          pip install --no-cache-dir -r requirements.txt
+          echo "✅ Installed packages:"
+          pip show scikit-learn
+          pip list | grep scikit-learn || true
+          python -m pip install --upgrade pip
+          pip install hopsworks pandas scikit-learn plotly python-dotenv joblib pyarrow
 
-      # Step 4: Configure environment
-      - name: 🔑 Configure environment variables
+      # 4️⃣ Run training script
+      - name: Train AQI model
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
-          echo "HOPSWORKS_API_KEY=${HOPSWORKS_API_KEY}" > .env
-          echo "✅ Environment ready."
-
-      # Step 5: Register Jupyter kernel (required for nbconvert)
-      - name: ⚙️ Register Jupyter kernel
-        run: |
-          python -m ipykernel install --user --name=python3
-          echo "✅ Jupyter kernel 'python3' registered."
-
-      # Step 6: Execute notebook
-      - name: 🚀 Execute Random Forest training notebook
-        run: |
-          echo "🚀 Running AQI Random Forest model training..."
-          jupyter nbconvert --to notebook --execute Model_training_AQI.ipynb --output output.ipynb --ExecutePreprocessor.timeout=3600
-          echo "✅ Notebook executed successfully."
-
-      # Step 7: Upload executed notebook (optional)
-      - name: 📤 Upload executed notebook
-        uses: actions/upload-artifact@v4
-        with:
-          name: executed_notebook
-          path: output.ipynb
-
-      # Step 8: Log success message
-      - name: 🟢 Log new model version
-        run: |
-          echo "✅ A new Random Forest AQI model version has been successfully trained and added to Hopsworks!"
-          echo "🕛 Training completed automatically by GitHub Actions at $(date -u)."
+          python model_training_aqi.py
