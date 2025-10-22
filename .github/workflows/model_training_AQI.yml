@@ -40,4 +40,4 @@ jobs:
         env:
           HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
-          python model_training_aqi.py
+          python model_training_AQI.py
