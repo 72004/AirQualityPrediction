@@ -28,7 +28,7 @@ jobs:
           python -m pip install --upgrade pip
           # Clean install of scikit-learn to avoid version conflicts
           pip install --no-cache-dir scikit-learn==1.4.2
-          pip install hopsworks joblib scikit-learn pandas numpy matplotlib plotly python-dotenv nbconvert
+          pip install hopsworks joblib pandas numpy matplotlib plotly python-dotenv nbconvert jupyter ipykernel
           echo "✅ Dependencies installed."
 
       # Step 4: Configure environment
@@ -39,21 +39,28 @@ jobs:
           echo "HOPSWORKS_API_KEY=${HOPSWORKS_API_KEY}" > .env
           echo "✅ Environment ready."
 
-      # Step 5: Execute notebook
+      # Step 5: Register Jupyter kernel (required for nbconvert)
+      - name: ⚙️ Register Jupyter kernel
+        run: |
+          python -m ipykernel install --user --name=python3
+          echo "✅ Jupyter kernel 'python3' registered."
+
+      # Step 6: Execute notebook
       - name: 🚀 Execute Random Forest training notebook
         run: |
           echo "🚀 Running AQI Random Forest model training..."
-          jupyter nbconvert --to notebook --execute Model_training_AQI.ipynb --output output.ipynb
+          jupyter nbconvert --to notebook --execute Model_training_AQI.ipynb --output output.ipynb --ExecutePreprocessor.timeout=3600
           echo "✅ Notebook executed successfully."
 
-      # Step 6: Upload executed notebook (optional)
+      # Step 7: Upload executed notebook (optional)
       - name: 📤 Upload executed notebook
         uses: actions/upload-artifact@v4
         with:
           name: executed_notebook
           path: output.ipynb
 
-      # Step 7: Log success message
+      # Step 8: Log success message
       - name: 🟢 Log new model version
         run: |
-          echo "✅ A new Random Forest AQI model version has been successfully added to Hopsworks!"
+          echo "✅ A new Random Forest AQI model version has been successfully trained and added to Hopsworks!"
+          echo "🕛 Training completed automatically by GitHub Actions at $(date -u)."
