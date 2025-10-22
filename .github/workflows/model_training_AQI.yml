@@ -39,9 +39,9 @@ jobs:
           jupyter nbconvert --to notebook --execute Model_training_AQI.ipynb \
             --output executed_Model_training_AQI.ipynb \
             --ExecutePreprocessor.kernel_name=python3 \
-            --ExecutePreprocessor.timeout=600
+            --ExecutePreprocessor.timeout=3600
           echo "✅ Notebook executed successfully."
-
+          
       - name: Upload executed notebook (optional)
         uses: actions/upload-artifact@v4
         with:
