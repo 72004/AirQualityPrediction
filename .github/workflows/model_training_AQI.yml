@@ -1,49 +1,59 @@
-name: Daily AQI Model Training (Colab Auto Run)
+name: Train AQI Model (Random Forest)
 
 on:
   schedule:
-    - cron: "0 0 * * *"  # runs every day at 00:00 UTC
-  workflow_dispatch:      # allows manual run from GitHub UI
+    - cron: "0 0 * * *"  # Runs every day at 12:00 AM UTC
+  workflow_dispatch:      # Allows manual trigger from GitHub Actions tab
 
 jobs:
-  train_model:
+  train-model:
     runs-on: ubuntu-latest
 
-    env:
-      HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
-
     steps:
-      - name: Checkout repository
+      # Step 1: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      # Step 2: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: Install dependencies
+      # Step 3: Install dependencies
+      - name: 📦 Install dependencies
+        working-directory: ${{ github.workspace }}
         run: |
           echo "🚧 Installing dependencies..."
           python -m pip install --upgrade pip
-          # Clean install to avoid dependency conflicts
+          # Clean install of scikit-learn to avoid version conflicts
           pip install --no-cache-dir scikit-learn==1.4.2
-          pip install --no-cache-dir -r requirements.txt
-          pip install tensorflow nbconvert nbformat matplotlib jupyter ipykernel
-          # Register Python kernel for Jupyter
-          python -m ipykernel install --user --name python3
-          echo "✅ All dependencies installed."
+          pip install hopsworks joblib scikit-learn pandas numpy matplotlib plotly python-dotenv nbconvert
+          echo "✅ Dependencies installed."
 
-      - name: Run Colab notebook automatically
+      # Step 4: Configure environment
+      - name: 🔑 Configure environment variables
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
         run: |
-          echo "🚀 Executing Jupyter notebook..."
-          jupyter nbconvert --to notebook --execute Model_training_AQI.ipynb \
-            --output executed_Model_training_AQI.ipynb \
-            --ExecutePreprocessor.kernel_name=python3 \
-            --ExecutePreprocessor.timeout=3600
+          echo "HOPSWORKS_API_KEY=${HOPSWORKS_API_KEY}" > .env
+          echo "✅ Environment ready."
+
+      # Step 5: Execute notebook
+      - name: 🚀 Execute Random Forest training notebook
+        run: |
+          echo "🚀 Running AQI Random Forest model training..."
+          jupyter nbconvert --to notebook --execute Model_training_AQI.ipynb --output output.ipynb
           echo "✅ Notebook executed successfully."
-          
-      - name: Upload executed notebook (optional)
+
+      # Step 6: Upload executed notebook (optional)
+      - name: 📤 Upload executed notebook
         uses: actions/upload-artifact@v4
         with:
           name: executed_notebook
-          path: executed_Model_training_AQI.ipynb
+          path: output.ipynb
+
+      # Step 7: Log success message
+      - name: 🟢 Log new model version
+        run: |
+          echo "✅ A new Random Forest AQI model version has been successfully added to Hopsworks!"
