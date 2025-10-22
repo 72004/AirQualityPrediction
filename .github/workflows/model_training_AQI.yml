@@ -1,0 +1,46 @@
+name: Daily AQI Model Training_AQI_Colab
+
+on:
+  schedule:
+    - cron: "0 0 * * *"  # runs every day at 00:00 UTC
+  workflow_dispatch:      # allows manual run from GitHub UI
+
+jobs:
+  train_model:
+    runs-on: ubuntu-latest
+
+    env:
+      HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        working-directory: ${{ github.workspace }}
+        run: |
+          echo "🚧 Installing dependencies..."
+          python -m pip install --upgrade pip
+          # Clean install of scikit-learn to avoid version conflicts
+          pip install --no-cache-dir scikit-learn==1.4.2
+          pip install --no-cache-dir -r requirements.txt
+          pip install tensorflow nbconvert nbformat matplotlib
+          echo "✅ Installed packages:"
+          pip show scikit-learn
+          pip list | grep scikit-learn || true
+
+
+      - name: Run Colab notebook automatically
+        run: |
+          jupyter nbconvert --to notebook --execute Model_training_AQI.ipynb --output executed_Model_training_AQI.ipynb
+
+      - name: Upload executed notebook (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: executed_notebook
+          path: executed_Model_training_AQI.ipynb
