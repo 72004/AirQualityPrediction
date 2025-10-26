@@ -6,7 +6,7 @@ fs = project.get_feature_store()
 # Replace 'combined_data' with your actual feature group name
 feature_group = fs.get_feature_group("weather_data_2", version=1)
 df = feature_group.read()
-print(df.tail(1))  # show last few rows
+print(df.tail(5))  # show last few rows
 
 
 

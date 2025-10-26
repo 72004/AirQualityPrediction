@@ -90,10 +90,10 @@ except Exception as e:
     st.stop()
     
 @st.cache_resource
-def load_model_from_registry(project, model_name="AQI_RF_Forecaster", version=None):
-    """Load model directly from Hopsworks Model Registry."""
+def load_model_from_registry(_project, model_name="AQI_RF_Forecaster", version=None):
+    """Load model from Hopsworks Model Registry, with local fallback."""
     try:
-        mr = project.get_model_registry()
+        mr = _project.get_model_registry()
 
         # Get specific version if provided, else latest
         if version:
@@ -116,11 +116,25 @@ def load_model_from_registry(project, model_name="AQI_RF_Forecaster", version=No
                     st.success(f"🎯 Loaded model from: {model_path}")
                     return joblib.load(model_path)
 
-        st.error("⚠️ No .pkl/.joblib file found in model artifacts.")
-        return None
+        st.warning("⚠️ No .pkl/.joblib file found in model artifacts. Trying local fallback...")
 
     except Exception as e:
-        st.error(f"❌ Failed to load model from Hopsworks: {e}")
+        st.warning(f"⚠️ Could not load model from Hopsworks: {e}. Falling back to local model...")
+
+    # --- Local fallback ---
+    LOCAL_MODEL_PATH = r"C:\Weather_project\models\AQI_RF_Forecaster_latest\rf_aqi_forecast.pkl"
+
+    if os.path.exists(LOCAL_MODEL_PATH):
+        try:
+            st.info("📂 Loading model from local path...")
+            model = joblib.load(LOCAL_MODEL_PATH)
+            st.success(f"✅ Loaded local model successfully from: {LOCAL_MODEL_PATH}")
+            return model
+        except Exception as e:
+            st.error(f"❌ Failed to load local model: {e}")
+            return None
+    else:
+        st.error(f"❌ Local model not found at: {LOCAL_MODEL_PATH}")
         return None
         
 def calculate_aqi(pm25, pm10):
@@ -182,6 +196,7 @@ def compute_metrics(y_true, y_pred):
     mae = mean_absolute_error(y_true, y_pred)
     rmse = np.sqrt(((y_true - y_pred) ** 2).mean())
     return {"MAE": mae, "RMSE": rmse}
+
 
 # -------------------------
 # Streamlit UI
@@ -255,7 +270,8 @@ st.sidebar.markdown(f"**Date range:** {df['datetime'].min()} — {df['datetime']
 # load model
 model = None
 if project and use_hopsworks:
-    model = load_model_from_registry(project, DEFAULT_MODEL_NAME)
+    model = load_model_from_registry(project, DEFAULT_MODEL_NAME, version=3)
+
 else:
     if os.path.exists(LOCAL_MODEL_PATH):
         model = joblib.load(LOCAL_MODEL_PATH)
