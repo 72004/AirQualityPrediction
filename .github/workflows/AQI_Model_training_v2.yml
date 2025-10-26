@@ -1,0 +1,43 @@
+name: AQI Model Training (Every 12 Hours)
+
+on:
+  schedule:
+    # Runs every 12 hours (00:00 and 12:00 UTC)
+    - cron: "0 */12 * * *"
+  workflow_dispatch:  # Allow manual trigger from the Actions tab
+
+jobs:
+  train-model:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout your repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set up Python
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # 3️⃣ Install dependencies
+      - name: Install dependencies
+        run: |
+          echo "🚧 Installing dependencies..."
+          python -m pip install --upgrade pip
+          # Clean install of scikit-learn to avoid version conflicts
+          pip install --no-cache-dir scikit-learn==1.4.2
+          pip install --no-cache-dir -r requirements.txt
+          echo "✅ Installed packages:"
+          pip show scikit-learn
+          pip list | grep scikit-learn || true
+          python -m pip install --upgrade pip
+          pip install hopsworks pandas scikit-learn plotly python-dotenv joblib pyarrow
+
+      # 4️⃣ Run training script
+      - name: Train AQI model
+        env:
+          HOPSWORKS_API_KEY: ${{ secrets.HOPSWORKS_API_KEY }}
+        run: |
+          python AQI_Model_training_v2.py
