@@ -1,4 +1,4 @@
-name: AQI Model Training (Every 12 Hours)
+name: AQI Model TrainingAQI_Model_training_v2
 
 on:
   schedule:
