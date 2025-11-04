@@ -1,7 +1,0 @@
-timestamp_utc,aqi_api,pm25,pm10,o3,no2,so2,co,station_name,fetched_at,temp,feels_like,pressure,humidity,wind_speed,wind_deg,weather_desc,hour,day,month,dow,is_weekend,aqi_change_rate
-2025-03-04 16:00:00,161,161,,,,,,"Karachi US Consulate, Pakistan",2025-10-07 10:33:58.057508+00:00,30.26,30.66,1009,45,5.61,240,clear sky,16,4,3,1,0,0.0
-2025-03-04 16:00:00,161,161,,,,,,"Karachi US Consulate, Pakistan",2025-10-11 12:22:29.531734+00:00,29.42,29.71,1011,46,4.58,249,clear sky,16,4,3,1,0,0.0
-2025-03-04 16:00:00,161,161,,,,,,"Karachi US Consulate, Pakistan",2025-10-11 13:52:34.759421+00:00,27.88,28.67,1012,54,4.43,252,clear sky,16,4,3,1,0,0.0
-2025-03-04 16:00:00,161,161,,,,,,"Karachi US Consulate, Pakistan",2025-10-11 13:54:13.983496+00:00,27.88,28.67,1012,54,4.43,252,clear sky,16,4,3,1,0,0.0
-2025-03-04 16:00:00,161,161,,,,,,"Karachi US Consulate, Pakistan",2025-10-11 13:59:27.034156+00:00,27.88,28.67,1012,54,4.43,252,clear sky,16,4,3,1,0,0.0
-2025-03-04 16:00:00,161,161,,,,,,"Karachi US Consulate, Pakistan",2025-10-11 14:02:24.730304+00:00,27.88,28.67,1012,54,4.43,252,clear sky,16,4,3,1,0,0.0
