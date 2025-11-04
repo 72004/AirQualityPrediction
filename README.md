@@ -56,6 +56,62 @@ The project runs entirely serverless using:
 - GitHub Actions (CI/CD)  
 
 ---
+## Implementation
+
+The system is implemented as a fully automated, serverless pipeline designed for continuous AQI prediction and model improvement.  
+The core components include:
+
+### 1. Data Collection
+
+- Weather and pollutant data (such as temperature, humidity, PM2.5, PM10, NO₂, and CO levels) are collected using the Open-Meteo API.
+
+- The script open_metro_1_year.py is used to fetch historical data for one full year (Oct 2024 – Oct 2025).
+
+- The resulting dataset is stored locally as karachi_weather_pollutants_2024_2025.csv.
+
+### 2. Data Ingestion and Feature Store Management
+
+- The script open_metro_hopswork_pushed_v3.py pushes the dataset to the Hopsworks Feature Store.
+
+- The same script also runs hourly (automated via GitHub Actions) to fetch real-time updates and append new data to the feature store.
+
+- This ensures that the model always has access to the latest information.
+
+### 3. Model Training
+
+- The model training is handled by the script AQI_Model_training_v2.py.
+
+- Data is pulled from the Hopsworks Feature Store and used to train a Random Forest Regressor model.
+
+- The model predicts AQI levels for the next 72 hours.
+
+- Trained models are stored both locally (aqi_model_push/) and in the Hopsworks Model Registry.
+
+- The training process is scheduled to run automatically every 12 hours using GitHub Actions.
+
+### 4. Deployment and Visualization
+
+- The trained model is deployed and visualized through a Streamlit web app (app_streamlit_aqi_v6.py).
+
+- The dashboard shows:
+
+-- Current AQI values
+
+-- Forecasted AQI values for the next 72 hours
+
+-- Graphical trends for better interpretability
+
+### 5. Continuous Automation
+
+- The pipeline is fully automated using GitHub Actions, which handle:
+
+- Hourly data ingestion
+
+- Periodic model retraining
+
+This setup enables the project to remain serverless and maintenance-free.
+
+
 
 ## How to Run Locally
 
