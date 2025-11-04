@@ -77,3 +77,15 @@ The Streamlit dashboard displays:
 - 🌤️ **72-hour AQI forecast (next 3 days)**  
 - 📊 **Visualized AQI trends and insights**
 
+<img width="1280" height="367" alt="image" src="https://github.com/user-attachments/assets/1078d8f2-b781-4bba-a7bc-4a976d525067" />
+<img width="1280" height="557" alt="image" src="https://github.com/user-attachments/assets/9df388a8-a25e-49d8-9115-7b1cc112160b" />
+<img width="1280" height="500" alt="image" src="https://github.com/user-attachments/assets/0fc26742-a770-41db-84dd-b1c7562c31c7" />
+<img width="1280" height="434" alt="image" src="https://github.com/user-attachments/assets/3374ad1d-8320-4e3b-b75c-3ef8ec4dbf8c" />
+<img width="1280" height="540" alt="image" src="https://github.com/user-attachments/assets/660d2967-7aa7-4862-b692-573a30974b61" />
+<img width="1280" height="468" alt="image" src="https://github.com/user-attachments/assets/d7373e79-07e5-4b13-a2d6-db49a9dd2ac7" />
+
+
+
+
+
+
