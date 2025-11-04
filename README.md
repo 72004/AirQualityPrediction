@@ -95,11 +95,11 @@ The core components include:
 
 - The dashboard shows:
 
--- Current AQI values
+  - Current AQI values
 
--- Forecasted AQI values for the next 72 hours
+  - Forecasted AQI values for the next 72 hours
 
--- Graphical trends for better interpretability
+  - Graphical trends for better interpretability
 
 ### 5. Continuous Automation
 
