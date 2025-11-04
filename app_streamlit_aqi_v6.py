@@ -40,7 +40,7 @@ MODEL_FEATURES = BASE_FEATURES + LAG_FEATURES
 # -------------------------
 st.set_page_config(page_title="🌤 AQI Forecast Dashboard", layout="wide", page_icon="🌤")
 st.title("🌤 Air Quality Index (AQI) Forecasting Dashboard")
-st.caption("📊 Powered by Random Forest | Hopsworks Feature Store | Streamlit UI")
+st.caption("")
 st.markdown("---")
 
 # -------------------------
@@ -567,44 +567,6 @@ with st.expander("📊 Exploratory Data Analysis (EDA)", expanded=True):
     fig.add_trace(go.Scatter(x=df_eda['datetime'], y=df_eda['aqi_roll'], name='Rolling Mean'))
     st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown("#### Distribution & Correlation")
-    if 'aqi' in df_eda.columns:
-        st.plotly_chart(px.histogram(df_eda, x='aqi', nbins=40, title="AQI Distribution"), use_container_width=True)
-    corr_cols = df_eda.select_dtypes(include=[np.number])
-    st.plotly_chart(px.imshow(corr_cols.corr(), text_auto=True, aspect="auto", title="Correlation Heatmap"), use_container_width=True)
-
-# -------------------------
-# 🧠 Advanced Analytics
-# -------------------------
-with st.expander("🧠 Advanced Analytics"):
-    st.markdown("#### Feature Importance (Random Forest)")
-    if hasattr(model, "feature_importances_"):
-        # Match feature importance length to feature names
-        fi = model.feature_importances_
-        feat_names = MODEL_FEATURES[:len(fi)]
-        fi_df = pd.DataFrame({
-            "Feature": feat_names,
-            "Importance": fi
-        }).sort_values("Importance", ascending=True)
-        st.plotly_chart(px.bar(fi_df, x='Importance', y='Feature', orientation='h'), use_container_width=True)
-    else:
-        st.info("Model doesn’t expose feature importances.")
-
-    # Quick backtest metrics if we can predict on tail of data
-    st.markdown("#### Quick backtest on last 20% of available data (if possible)")
-    try:
-        # only attempt if all features present
-        if set(MODEL_FEATURES).issubset(df.columns):
-            split_idx = int(0.8 * len(df))
-            X_back = df[MODEL_FEATURES].iloc[split_idx:]
-            y_back = df['aqi'].iloc[split_idx:]
-            y_pred_back = model.predict(X_back.fillna(method="ffill").fillna(0))
-            metrics = compute_metrics(y_back, y_pred_back)
-            st.write(metrics)
-        else:
-            st.info("Not enough columns to compute backtest metrics.")
-    except Exception as e:
-        st.warning(f"Backtest failed: {e}")
 
 # -------------------------
 # 💾 Data & Downloads
@@ -616,4 +578,4 @@ with st.expander("💾 Data & Downloads"):
         st.download_button("⬇️ Download Forecast CSV", csv, file_name="aqi_forecast.csv", mime="text/csv")
 
 st.markdown("---")
-st.caption("Built with ❤️ using Streamlit + Hopsworks + Scikit-learn")
+st.caption("Developed by Umar Tirmizi")
